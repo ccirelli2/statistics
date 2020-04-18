@@ -1,7 +1,8 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-from scipy import chi2_contingency
+from scipy.stats import chi2_contingency
+from scipy.stats import chi2
 import os
 
 
@@ -15,7 +16,7 @@ References:
 1.) https://en.wikipedia.org/wiki/Chi-squared_distribution
 2.) https://en.wikipedia.org/wiki/Chi-squared_test
 3.) https://machinelearningmastery.com/chi-squared-test-for-machine-learning/
-
+4.) https://www.itl.nist.gov/div898/handbook/eda/section3/eda3674.htm
 '''
 
 # Definition ------------------------------------------------------------
@@ -128,17 +129,40 @@ test_statistic = df_stat.sum().sum()
 ''' (number of rows -1)*(number of columns -1)
 '''
 
-
 # Utilizing Scipy Function -----------------------------------------
 contingency_table = df_act.to_numpy()
-
 stat, p, dof, expected = chi2_contingency(contingency_table)
 
-print(stat)
-print(p)
-print(dof)
-print(expected)
 
+# Compare Results From Manually Calculated Statistic vs Scipy Package
+print('Manually calculated statistic => {} vs Scipy => {}'.format(test_statistic, stat))
+
+
+
+# Obtain Critical Value & Compare to Test Statistic
+''' The Crirical value will represent the the minimum value
+    obtained from the chi-squared distribution that the test-
+    statistic can take.  If the test statistic is > then we
+    reject the null-hypothesis.
+
+    Explanation of the critical value: https://www.itl.nist.gov/div898/handbook/eda/section3/eda3674.htm
+'''
+
+prob = 0.95
+alpha = 1-prob
+critical = chi2.ppf(prob, dof)
+
+if abs(stat) >= critical:
+    print('Reject the null hypothesis as the stat => {} is > than critical value => {}'.format(
+        stat, critical))
+else:
+    print('Fail to reject the null hypothesis as the stat => {} is < critical value => {}'.format(
+        stat, critical))
+
+if p <= alpha:
+    print('Reject null hypothesis.  P {} <= alpha {}'.format(p, alpha))
+else:
+    print('Fail to reject the null hypothesis. Pvalue {} >= {}'.format(p, alpha))
 
 
 
