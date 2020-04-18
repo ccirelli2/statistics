@@ -1,2 +1,2 @@
 # statistics_r
-I wanted to create a repository for topics related to statistics using R. 
+I wanted to create a repostiroty for all my scripts associated with statistical topics.  Code is written in both Python and R. 
