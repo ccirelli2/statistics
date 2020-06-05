@@ -1,0 +1,208 @@
+____________________________________________________________________________________
+
+# Notes on poisson regression 	
+____________________________________________________________________________________
+
+____________________________________________________________________________________
+Poisson Reg tut	| https://www.youtube.com/watch?v=U-bMvccsn08
+
+Log-likelihood
+Poisson Dist	| https://math.stackexchange.com/questions/2399613/how-to-derive-the-likelihood-and-
+		  loglikelihood-of-the-poisson-distribution
+____________________________________________________________________________________
+
+
+
+
+Objective  	Poisson regression seeks to model the rate at which an event occurs
+		over a duration of time.  
+
+Notes:		This model assumes that the count data comes from a poisson process
+		or distribution. Therefore, we should learn how to test from which 
+		distribution the data is most similar. 
+
+
+
+
+________________________________________________________________________
+
+Model	      	| GLM
+Event 	      	| death, insury, onset of illness.
+	      	| may be positive (recovery) or negative (heart attack) 
+Incidence rate	| number of events / person-time.
+person-time   	| person-time at risk for the event. 
+unit	      	| need to report time period, year, minutes, days, etc. 
+_______________________________________________________________________
+
+Poisson \
+Regression	| Used to model counts or rates. 
+		| Counts follow a poisson distribution. 
+		| Rates deal with follow-up times. 
+		| Follow-up times is the denominator in the rate calculation. 
+
+When do you 
+model counts vs
+rates?		| Poisson allows us to account for diff in follow-up times
+		  for diff participants. 
+	Count	| When all participants have the same follow-up times. 
+	Rate	| When the follow-up times is diff. 
+		| Rate is lambda = y/t. 
+		| rate at which events occur. 
+		| usually don't know the rate and we need to estimate it. 
+
+
+Interest	| We are interested in modeling the modeling this rate. 
+		| rate = e ^ b0 + b1x1 + ....
+		| we need to model the log rate 
+		| ln(lambda) = b0 + b1x1 = ....
+
+
+yi		| since yi is a count variable the natural choice of the distribution 
+		| is poisson. 
+
+Formula		| P(yi=y | lambda) = exp(-lambda i) * lambda i**Y / y!
+		| means that the probability that yi=y given lambda 
+
+lambda i	| = E(yi | xi) > = 0. 
+		| y! = y(y-1) ...1; usual factorial function. 
+
+Parameterization| links the xi to lambda i.  We want lambda i as a function of xi. 
+		  lambda i = P(yi = y| xi) = h(xi) = H(xiBi)
+		  The probability that yi takes on the value y given xi
+		  is equal to h(xi), and we specify this as 
+		  H function which is the sum of xi multiplied by respective betas. 
+___________________________________________________________________________________
+
+Two mapping steps
+		| Step1: xiB: R^k to a real number.  Real dimension ^k -> R.   
+		| Step2: mapping real number from 0 to infinity. 
+		  
+Condition	| H(xiB) must be equal to or greater than 0. 
+		| for this we use (exp(xiB). 
+
+Poisson Model	| exp(-exp(xiB)) * exp(xiB)^y / y!
+____________________________________________________________________________________
+
+Model Explained	
+		| We started out by saying that count data can be modeled by a poisson
+		| distribution, whose pdf is P(yi=y|lambdai) = exp(-lambdai)^lambdai^y
+
+		| And we said that lambda is simply the rate at which the event occurs. 
+
+		| We also said that we needed a way to link lambda as a function of xi, 
+		| which we said was H(xi B), 
+		
+		| Since H(xi B) needs to be > or = to 0, we needed to take the exp(xi B)
+
+
+		| Finally, we re-write the poisson distribution as 
+		| P(yi=y) | xi B) = exp(-exp(xi B)) * exp(xi B)**y / y!
+
+
+_____________________________________________________________________________________
+_____________________________________________________________________________________
+
+
+Title: 	Illustrated Guide to Poisson Regression Model 
+Ref: 	https://towardsdatascience.com/an-illustrated-guide-to-the-poisson-regression-model-50cccba15958
+Data:	NYC bicyclist counts data set. 
+
+
+Poisson Distribution
+		
+Formula		| e ^ (lambda*t) * (lambda*t) ^ k / k!
+		| lambda = e**XB, where X and B are matrices. 	
+
+Mean		| the mean of a poisson distribution is lambda. 
+		| This means that one should expect to see lambda events in any unit of
+		| time, such as 1 hour, 1 day, etc. for any time interval t one would expect to 
+		| see lambda*t events. 
+
+Constant lambda | if the event rate of lambda is constant, one can simply use a modified
+		| mean model for predicting future counts of events. In this case, one would
+		| set all predicted values of counts to this constant value lambda. 
+
+Lambda not const| In the event lambda is not constant for each observation, then we need to 
+		| inspect some explanatory variables, also known as predictors, to see how
+		| we can potentially model this rate. 
+
+
+Regression	| The purpose is to fit the observed counts "y" to the matrix of regression 
+		| values "X"
+
+Fitting y	| The fitting of y to X happens by fixing the values of a vector of 
+		| regression coefficients B (beta). 
+
+Link function	| The job of the poisson regression model is to fit the observed counts y
+		| to the regression matrix X via  link function that expresses the rate vector
+		| lambda as a function of 1.) the regression coefficients, and 2.) the regression
+		| matrix X. 
+
+Process		| X -> f(x) -> B = lambda -> yeilds y or n observed counts. 
+
+
+Links function	| lambda i = exp(xi B), where xi is the ith row of the training set
+		| and beta is the gression coefficient. 
+		| This link function keeps lambda non-negative even when X or B is negative. 
+		
+
+Summing up	
+		| For the ith observation in the data set denoted by y_i, which corresponds to
+		| the row of regression variables x_i, the probability of observing the count 
+		| y_i is Poisson distributed as per the following PMF:
+
+		| PMF (yi|xi) = exp(-lambda_i) * lambda_i**yi / yi!
+
+		| where the mean rate lambda_i for the ith sample is given by the exponential
+		| link function e**xiB
+
+Predictions	| Once the model is fit, the Betas are known. 
+		| Y_p = lambda_p = e**x_p*B, where x_p is the regressor for the pth sample. 
+
+____________________________________________________________________________________________
+____________________________________________________________________________________________
+
+
+Training the Poisson Regression Model
+
+Purpose		| Finding the values of the regression coefficients Beta, which would make the
+		| vector of observed counts "y" most likely. 
+
+Technique	| The technique for identifying the coefficients B is called Maximum 
+		| Likelihood Estimation (MLE). 
+
+y counts	| Important to remebmer that the y counts are considered independent random
+		| variables, and therefore, their joint probability of occurance can be 
+		| expressed as the multiplication of the individual probabilities, which
+		| would be the total probability of observing all of these counts. 
+
+MLE		| Remember that the values of lamda are linked to the regression vector
+		| x1 -> x_n via the gression coefficients. 
+		| What value of B will make the given set of observed counts y most likely?
+		| It is the value of B for which the joint probability show in the above 
+		| equation achieves the maximum value. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
