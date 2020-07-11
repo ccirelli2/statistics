@@ -22,6 +22,16 @@
     on a given response value (Y value, the count or rate). 
   - For instance, a grocery store could use pr to understand and predict the
     number of people in line. 
+
+  Assumptions
+  - An event can occur any number of times during a time period.
+  - Events occur independently. In other words, if an event occurs, it does not affect the 
+    probability of another event occurring in the same time period.
+  - The rate of occurrence is constant; that is, the rate does not change based on time.
+  - The probability of an event occurring is proportional to the length of the time period. 
+    For example, it should be twice as likely for an event to occur in a 2 hour time period than 
+    it is for an event to occur in a 1 hour period.
+
 '
 
 
@@ -30,6 +40,11 @@
   a specific timeframe.  
   It assumes that y occurences are not affected by the timing of previous
   occurences of y. 
+  
+  Another Definition: The Poisson distribution is the discrete probability distribution of the number of \
+  events occurring in a given time period, given the average number of times the 
+  event occurs over that time period.
+  
 
   From stats book: "A widely used distribution emerges from the concept that 
     events occur randomly in an interval (or region).  The random variable
