@@ -93,7 +93,9 @@ ci.right <- mu.hat + ci          # get right tail ci
 
 
 
-
+##################################
+# Next 
+'https://data-flair.training/blogs/bootstrapping-in-r/'
 
 
 
