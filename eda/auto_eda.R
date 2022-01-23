@@ -20,7 +20,7 @@ setwd(dir.root)
 # Libraries
 library(dplyr)
 library(readr)
-install.packages("DataExplorer")
+library(DataExplorer)
 
 # Load Data
 df <- 
@@ -45,19 +45,64 @@ head(df)
 ################################################################################
 # Data Explorer
 ################################################################################
-'Can generate a complete html report on data.
+'Can generate a complete html report on data by calling create_report function.
  Additional helpful functions to create plots.
 '
 
+### Create Complete HTML Report
+df %>%
+  create_report(
+    output_file = paste("Report_cardiovascular_disease", format(Sys.time(), "%Y-%m-%d %H:%M:%S %Z"), sep=" - "),
+    output_dir=paste(dir.root, "/data", sep=""),
+    report_title = "EDA Report - Cardiovascular Disease Dataset",
+    y = "cardio"
+  )
+
+### Useful Plots
+
+# Data-Structure
+plot_str(df)
+
+# Bar-Graph-By-Group
+'In this case by cardio vascular disease'
+plot_bar(df, by='cardio')
+
+# QQ Plots
+'First plot the distribution'
+hist(df$age)
+plot_qq(df)
+
+# Plot Densities
+plot_density(df)
+
+# Plot Heatmap
+plot_correlation(df)
 
 
+################################################################################
+# GGally
+################################################################################
+install.packages("GGally")
+library(GGally)
+
+# change plot size (optional)
+options(repr.plot.width = 20, repr.plot.height = 10)
+
+df %>% 
+  select("age", "cholesterol", "height", "weight") %>%
+  ggpairs(mapping = aes(color = df$cardio, alpha = 0.5))
 
 
+################################################################################
+# SmartEDA
+################################################################################
+library(SmartEDA)
 
-
-
-
-
-
-
+# similarly, with dplyr syntax: df %>% ExpReport(...)
+ExpReport(
+  df,
+  Target="cardio",
+  label=NULL,
+  op_file="Report.html",
+  op_dir=getwd())
 
